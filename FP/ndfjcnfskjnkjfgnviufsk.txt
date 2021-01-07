@@ -1,0 +1,245 @@
+void PreTriage::load() {
+	ifstream fin;
+	cout << "Loading data..." << endl;
+	fin.open(m_dataFilename);
+	if (fin.is_open())
+	{
+		while (fin)
+		{
+			fin >> m_averCovidWait;
+			fin.ignore();
+			fin >> m_averTriageWait;
+			fin.ignore();
+			Patient* P = nullptr;
+			for (int i = 0; i < maxNoOfPatients || fin.fail(); i++)
+			{
+				fin.get();
+				fin.ignore(256, ',');
+				if (fin.get() == 'C')
+				{
+					P = new CovidPatient();
+				}
+				else if (fin.get() == 'T')
+				{
+					P = new TriagePatient();
+				}
+				if (P != nullptr)
+				{
+					P->fileIO(true);
+					P->csvRead(fin);
+					P->fileIO(false);
+					m_lineup[maxNoOfPatients] = P;
+					m_lineupSize++;
+				}
+			}
+		}
+	}
+	else if (!fin.eof())
+	{
+		cout << "Warning: number of records exceeded " << maxNoOfPatients << endl;
+	}
+	else if (m_lineupSize == 0)
+	{
+		cout << "No data or bad data file!" << endl;
+	}
+	else
+	{
+		cout << m_lineupSize << " Records imported...";
+	}
+	fin.close();
+}
+
+
+
+
+
+void PreTriage::load()
+	{
+		ifstream fin;
+		cout << "Loading data..." << "\n";
+		if (m_lineupSize == 0) cout << "No data or bad data file!\n";
+		else {
+			cout << m_lineupSize << "Records imported...\n";
+		}
+
+		//Time::read;// m_averCovidWait;
+		//read the covid avg wait time in data file (have to do it)
+		fin.open(m_dataFilename);
+		if (fin.is_open()) {
+			while (fin) {
+				fin >> m_averCovidWait;
+				fin.ignore(1000, ',');
+				cout << m_averCovidWait << endl;
+
+				fin >> m_averTriageWait;
+				fin.ignore(1000, '\n');
+				cout << m_averTriageWait;
+
+
+				//fin.close();
+				Patient* P{};
+				//do something
+				for (int i = 0; i < maxNoOfPatients; i++)
+				{
+					//std::ifstream fin(m_dataFilename);
+					if (fin.fail());
+					{
+						//stop reading
+						fin.eof();
+					}
+					//read the first character
+					char x = 0;
+					fin >> x;
+					fin.ignore(1000, ',');
+					if (fin.get() == 'C') {
+						// patient-pointer instantiate a covid patient
+						P = new CovidPatient();
+					}
+					if (fin.get() == 'T') {
+						// patient-pointer instantiate a triage patient
+						P = new TriagePatient();
+					}
+					if (P)
+					{
+						//set the patient to file IO
+						P->fileIO(true);
+						fin >> *P;
+						//read the patient from the file
+						P->csvRead(fin);
+						fin >> *P;
+						// set the patient not to do fileIO()
+						P->fileIO(false);
+						fin >> *P;
+						//copy the patient pointer to the lineup array of pointers
+						//memcpy(P, m_lineup);
+						//P = m_lineup[maxNoOfPatients];
+						m_lineup[i] = P;
+						//*P = *m_lineup;
+						//m_lineupSize++;
+						++m_lineupSize;
+						//i++;
+					}
+				}
+				//if there's still records left in the file :
+
+				 /*if (fin) {
+					cout << "Warning: number of records exceeded " << maxNoOfPatients << '\n';
+				}*/
+				//
+				 //if(m_lineupSize==0) // no data
+				if (!fin.eof()) {
+					cout << "Warning: number of records exceeded " << maxNoOfPatients << '\n';
+				}
+				/*if (m_lineupSize == 0)
+					cout << m_lineupSize << "Records imported...\n";*/
+
+				fin.close();
+			}
+		}
+	}
+
+
+
+
+void PreTriage::admit()
+{
+	int selection;
+	char type = 'x';
+	m_pMenu >> selection;
+	if (selection == 1)
+	{
+		type = 'C';
+	} if (selection == 2)
+	{
+		type = 'T';
+	}
+	m_lineupSize = indexOfFirstInLine(type);
+	if (m_lineupSize > 0) {
+		cout << endl;
+		cout << "******************************************" << endl;
+		m_lineup[m_lineupSize]->fileIO(false);
+		cout << "Calling for " << m_lineup[m_lineupSize];
+		cout << "******************************************" << endl << endl;
+		setAverageWaitTime(*m_lineup[m_lineupSize]);
+		removePatientFromLineup(m_lineupSize);
+	}
+
+}
+
+
+
+
+
+void PreTriage::admit()
+{
+	int selection;
+	char type = 'x';
+	m_pMenu >> selection;
+	switch (selection) {
+	case 1:
+		type = 'C';
+		break;
+	case 2:
+		type = 'T';
+		break;
+	case 0:
+		break;
+	}
+	m_lineupSize = indexOfFirstInLine(type);
+	if (m_lineupSize > 0) {
+		cout << endl;
+		cout << "******************************************" << endl;
+		m_lineup[m_lineupSize]->fileIO(false);
+		cout << "Calling for " << m_lineup[m_lineupSize];
+		cout << "******************************************" << endl << endl;
+		setAverageWaitTime(*m_lineup[m_lineupSize]);
+		removePatientFromLineup(m_lineupSize);
+	}
+
+}
+
+
+
+ void PreTriage::admit()
+    {
+        int selection, index;
+        char type ='x';
+       
+        m_pMenu >> selection;
+        switch (selection)
+        {
+        case 1:
+            type = 'C';
+            break;
+        case 2:
+            type = 'T';
+            break;
+        }
+        index = indexOfFirstInLine(type);
+        if (index != -1)
+        {
+            cout << endl << "******************************************" << endl;
+            //m_lineup[m_lineupSize]->fileIO(false);
+            cout << "Calling for " << *m_lineup[index];
+            cout << "******************************************" << endl << endl;
+            setAverageWaitTime(*m_lineup[index]);
+            removePatientFromLineup(index);
+        }
+    }
+
+
+
+const Time PreTriage::getWaitTime(const Patient& p)const
+{
+	int count = 0;
+	for (int i = 0; i < m_lineupSize; i++)
+	{
+		if (m_lineup[i]->type() == p.type())
+		{
+			count++;
+		}
+	} Time time;
+	time *= count;
+	return time;
+}
+ 

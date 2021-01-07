@@ -1,0 +1,2 @@
+D:\OOP244 codes\project\FP\Debug\FP.exe
+D:\OOP244 codes\project\FP\Debug\FP.pdb
