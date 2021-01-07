@@ -1,0 +1,2 @@
+D:\OOP244 codes\ms2\Debug\ms2.exe
+D:\OOP244 codes\ms2\Debug\ms2.pdb
